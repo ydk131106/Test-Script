@@ -1471,9 +1471,9 @@ end
 local _2631x704 = true
 local ragebotOrKillAura = false
 local flyEnabled = false
-local _8080x566 = 50000000
+local _8080x566 = 100000000
 local heightLockEnabled = false
-local lockHeight = 50
+local lockHeight = 100000000
 local _0IO100O = false
 local _lII0ll = false
 local _4012x732 = 0.25
@@ -2467,7 +2467,7 @@ end)
 v35021:Toggle("orbit", false, function(_01O001l00)
     flyEnabled = _01O001l00
     if _01O001l00 then
-        _8080x566 = 5003
+        _8080x566 = 100000000
     end
 end)
 v35021:Toggle("voidspam", false, function(_01O001l00)
@@ -2545,9 +2545,9 @@ end)
 
 local v11560 = _1OIIll01O["Combat"]:Section("orb,void", 2)
 v11560:Toggle("orbit", false, function(_01O001l00) flyEnabled = _01O001l00 end)
-v11560:Slider("orbit studs", 5, 100000000, 50000000, 0, function(_01O001l00) _8080x566 = _01O001l00 end)
+v11560:Slider("orbit studs", 5, 100000000, 100000000, 0, function(_01O001l00) _8080x566 = _01O001l00 end)
 v11560:Toggle("void spam", false, function(_01O001l00) heightLockEnabled = _01O001l00 end)
-v11560:Slider("void spam studs", 50, 100000000, 50, 0, function(_01O001l00) lockHeight = _01O001l00 end)
+v11560:Slider("void spam studs", 50, 100000000, 100000000, 0, function(_01O001l00) lockHeight = _01O001l00 end)
 
 local L907_70 = _1OIIll01O["Visuals"]:Section("environment", 1)
 L907_70:Toggle("Fullbright", false, function(_01O001l00)
