@@ -1559,6 +1559,7 @@ local _0x98ec = false
 local a93b76c35 = "all walls"
 
 local a13b53c88 = false
+local freeCamEnabled = false
 local emoteHopEnabled = false
 local emoteSpeed = 40
 local __JBrJMqdvA = nil
@@ -2760,22 +2761,29 @@ end)
 _0xbc8b:Dropdown("device selection", {"VR", "Mobile", "Controller", "Computer"}, "VR", function(_01O001l00)
     _0xe7ca = _01O001l00
 end)
-local _0xb815 = _1OIIll01O["Misc"]:Section("third person", 2)
-_0xb815:Toggle("enabled", false, function(_01O001l00)
+local _0xb815 = _1OIIll01O["Misc"]:Section("Person", 2)
+_0xb815:Toggle("Third Person", false, function(_01O001l00)
     a13b53c88 = _01O001l00
     pcall(function()
-        local __RrBoATP = cloneref(game:GetService("Players"))
-        local _0xf41b = require(__RrBoATP.LocalPlayer.PlayerScripts.Controllers.CameraController)
+        local p = cloneref(game:GetService("Players"))
+        local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
         if _01O001l00 then
-            _0xf41b.CameraState:_SetPOVState(_0xf41b.CameraState.States.ThirdPersonMirrored)
+            gun.CameraState:_SetPOVState(gun.CameraState.States.ThirdPerson)
         else
-            
-            local L870_75 = _0xf41b.CameraState.States
+            local L870_75 = gun.CameraState.States
             local _0l0001I11I1l = L870_75.FirstPerson or L870_75.FirstPersonMirrored or L870_75.Default
             if _0l0001I11I1l then
-                _0xf41b.CameraState:_SetPOVState(_0l0001I11I1l)
+                gun.CameraState:_SetPOVState(_0l0001I11I1l)
             end
         end
+    end)
+end)
+_0xb815:Toggle("FreeCam", false, function(_01O001l00)
+    freeCamEnabled = _01O001l00
+    pcall(function()
+        local p = cloneref(game:GetService("Players"))
+        local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
+        gun.CameraState:SetCustomFreecamEnabled(_01O001l00 and true or false)
     end)
 end)
 
@@ -3128,9 +3136,18 @@ LocalPlayer.CharacterAdded:Connect(function(__CydKJDoaY)
     if a13b53c88 then
         task.defer(function()
             pcall(function()
-                local __RrBoATP = cloneref(game:GetService("Players"))
-                local _764_114 = require(__RrBoATP.LocalPlayer.PlayerScripts.Controllers.CameraController)
-                _764_114.CameraState:_SetPOVState(_764_114.CameraState.States.ThirdPersonMirrored)
+                local p = cloneref(game:GetService("Players"))
+                local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
+                gun.CameraState:_SetPOVState(gun.CameraState.States.ThirdPerson)
+            end)
+        end)
+    end
+    if freeCamEnabled then
+        task.defer(function()
+            pcall(function()
+                local p = cloneref(game:GetService("Players"))
+                local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
+                gun.CameraState:SetCustomFreecamEnabled(true)
             end)
         end)
     end
