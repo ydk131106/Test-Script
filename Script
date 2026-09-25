@@ -1559,7 +1559,6 @@ local _0x98ec = false
 local a93b76c35 = "all walls"
 
 local a13b53c88 = false
-local freeCamEnabled = false
 local emoteHopEnabled = false
 local emoteSpeed = 40
 local __JBrJMqdvA = nil
@@ -2778,14 +2777,6 @@ _0xb815:Toggle("Third Person", false, function(_01O001l00)
         end
     end)
 end)
-_0xb815:Toggle("FreeCam", false, function(_01O001l00)
-    freeCamEnabled = _01O001l00
-    pcall(function()
-        local p = cloneref(game:GetService("Players"))
-        local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
-        gun.CameraState:SetCustomFreecamEnabled(_01O001l00 and true or false)
-    end)
-end)
 
 local L779_93 = _1OIIll01O["Misc"]:Section("arcade servers", 2)
 L779_93:Toggle("automatically grab drops", false, function(_01O001l00)
@@ -3139,15 +3130,6 @@ LocalPlayer.CharacterAdded:Connect(function(__CydKJDoaY)
                 local p = cloneref(game:GetService("Players"))
                 local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
                 gun.CameraState:_SetPOVState(gun.CameraState.States.ThirdPerson)
-            end)
-        end)
-    end
-    if freeCamEnabled then
-        task.defer(function()
-            pcall(function()
-                local p = cloneref(game:GetService("Players"))
-                local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
-                gun.CameraState:SetCustomFreecamEnabled(true)
             end)
         end)
     end
