@@ -9,6 +9,7 @@
 
 local bit32 = bit32 or bit
 
+
 local _frameCounter = 0
 local function everyNFrames(n)
     _frameCounter = _frameCounter + 1
@@ -84,7 +85,7 @@ pcall(function()
         end
         task.defer(function()
             task.wait(1)
-            for _,n in ipairs({"HalmuESP","HalmuFOV","HalmuIndicators","ExecutorToggleUI","CustomCursorGui"}) do
+            for _,n in ipairs({"HalmuESP","HalmuFOV","HalmuIndicators","ExecutorToggleUI"}) do
                 local o = CoreGui:FindFirstChild(n)
                 if o then cloak(o) end
                 if LP and LP:FindFirstChild("PlayerGui") then
@@ -173,23 +174,20 @@ end;
 
 local _7765x301 = Instance.new("ScreenGui")
 _7765x301.Name = "nexlib"
-setthreadidentity = setthreadidentity or function() end;
-setthreadidentity(8)
-_7765x301.Parent = game:GetService("CoreGui")
-_7765x301.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
-
-local _0x8bd0 = Instance.new("ScreenGui")
-_0x8bd0.Name = "CustomCursorGui"
-_0x8bd0.ResetOnSpawn = false
-_0x8bd0.Parent = _7765x301
-
-local _lO1I110O0 = Instance.new("Frame")
-_lO1I110O0.Name = "CursorBox"
-_lO1I110O0.Size = UDim2.new(0, 6, 0, 6)
-_lO1I110O0.BackgroundColor3 = Color3.fromRGB(128, 213, 247)
-_lO1I110O0.BorderSizePixel = 0
-_lO1I110O0.Visible = false
-_lO1I110O0.Parent = _0x8bd0
+_7765x301.ResetOnSpawn = false
+_7765x301.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+_7765x301.DisplayOrder = 999
+setthreadidentity = setthreadidentity or setidentity or function() end
+pcall(function() setthreadidentity(8) end)
+pcall(function() _7765x301.Parent = game:GetService("CoreGui") end)
+if not _7765x301.Parent then
+    pcall(function()
+        _7765x301.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 5)
+    end)
+end
+if not _7765x301.Parent then
+    warn("[할무발크] GUI parent failed")
+end
 
 local L857_11 = Instance.new("Folder")
 L857_11.Name = "NotificationFolder"
@@ -418,7 +416,6 @@ function nexlib:Window(windowTitle)
 
     local function a49b45c10()
         _783_273.Visible = L561_63
-        _lO1I110O0.Visible = L561_63
         game:GetService("UserInputService").MouseBehavior = Enum.MouseBehavior.Default
         
         local v53851 = game:GetService("TweenService")
@@ -449,12 +446,14 @@ local _425_141 = Instance.new("ScreenGui")
 
     local a81b35c84 = Instance.new("TextButton")
     a81b35c84.Name = "ToggleFrame"
-    a81b35c84.Size = UDim2.new(0, 65, 0, 36)
+    a81b35c84.Size = UDim2.new(0, 78, 0, 28)
     a81b35c84.Position = UDim2.new(0, 20, 0, 20)
     a81b35c84.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     a81b35c84.BorderSizePixel = 0
     a81b35c84.Active = true
     a81b35c84.Draggable = true
+    a81b35c84.Text = ""
+    a81b35c84.AutoButtonColor = false
     a81b35c84.Parent = _425_141
 
     local L788_37 = Instance.new("UIStroke")
@@ -463,26 +462,16 @@ local _425_141 = Instance.new("ScreenGui")
     L788_37.Parent = a81b35c84
 
     local _1160x364 = Instance.new("TextLabel")
-    _1160x364.Size = UDim2.new(1, -6, 0, 16)
-    _1160x364.Position = UDim2.new(0, 3, 0, 2)
+    _1160x364.Size = UDim2.new(1, -4, 1, 0)
+    _1160x364.Position = UDim2.new(0, 2, 0, 0)
     _1160x364.BackgroundTransparency = 1
-    _1160x364.Text = "Toggle"
+    _1160x364.Text = "UI Toggle"
     _1160x364.TextColor3 = Color3.fromRGB(230, 230, 230)
     _1160x364.TextSize = 12
     _1160x364.Font = Enum.Font.GothamBold
-    _1160x364.TextXAlignment = Enum.TextXAlignment.Left
+    _1160x364.TextXAlignment = Enum.TextXAlignment.Center
+    _1160x364.TextYAlignment = Enum.TextYAlignment.Center
     _1160x364.Parent = a81b35c84
-
-    local _7658x168 = Instance.new("TextLabel")
-    _7658x168.Size = UDim2.new(1, -6, 0, 16)
-    _7658x168.Position = UDim2.new(0, 3, 0, 18)
-    _7658x168.BackgroundTransparency = 1
-    _7658x168.Text = "Look"
-    _7658x168.TextColor3 = Color3.fromRGB(230, 230, 230)
-    _7658x168.TextSize = 12
-    _7658x168.Font = Enum.Font.GothamBold
-    _7658x168.TextXAlignment = Enum.TextXAlignment.Left
-    _7658x168.Parent = a81b35c84
 
     a81b35c84.MouseButton1Click:Connect(function()
         L561_63 = not L561_63
@@ -493,12 +482,6 @@ local _425_141 = Instance.new("ScreenGui")
         while task.wait() do 
             _1181x706.BackgroundColor3 = nexlib.accentclr 
             L788_37.Color = nexlib.accentclr 
-            _lO1I110O0.BackgroundColor3 = nexlib.accentclr
-            
-            if L561_63 then
-                local _6588x624 = game:GetService("UserInputService"):GetMouseLocation()
-                _lO1I110O0.Position = UDim2.new(0, _6588x624.X, 0, _6588x624.Y)
-            end
         end 
     end)()
 
@@ -1374,61 +1357,14 @@ end)
         _7765x301:Destroy()
     end;
 
-    local function update_targeting()
-        local v53851 = game:GetService("TweenService")
-        local v56079 = game:GetService("Lighting")
-        
-        task.wait(0.7)
-        local _924_912 = tick()
-        while tick() - _924_912 < 3 do task.wait() end
-        
-        local v10331 = tick()
-        while tick() - v10331 < 2 do
-            local __YEzeEiWEWFAS = 0
-            for i = 1, 500000 do __YEzeEiWEWFAS = __YEzeEiWEWFAS + i end
-            task.wait()
-        end
-        
-        local _491_505 = v56079:FindFirstChild("ValkUIBlur") or Instance.new("BlurEffect")
-        _491_505.Name = "ValkUIBlur"
-        _491_505.Size = 0
-        _491_505.Parent = v56079
-        
-        local a73b89c71 = Instance.new("TextLabel")
-        a73b89c71.Name = "IntroLEVK"
-        a73b89c71.Parent = _7765x301
-        a73b89c71.AnchorPoint = Vector2.new(0.5, 0.5)
-        a73b89c71.Position = UDim2.new(0.5, 0, 0.5, 0)
-        a73b89c71.Size = UDim2.new(0, 400, 0, 100)
-        a73b89c71.BackgroundTransparency = 1
-        a73b89c71.Font = Enum.Font.Code
-        a73b89c71.Text = "LEVK"
-        a73b89c71.TextColor3 = nexlib.accentclr
-        a73b89c71.TextSize = 80
-        a73b89c71.TextTransparency = 1
-        
-        local _01I1I0Il = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local _Ol110II1II = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        
-        v53851:Create(_491_505, _01I1I0Il, {Size = 24}):Play()
-        v53851:Create(a73b89c71, _01I1I0Il, {TextTransparency = 0}):Play()
-        
-        task.wait(2.2)
-        
-        local a23b36c50 = v53851:Create(_491_505, _Ol110II1II, {Size = 18})
-        local _IIOIl0IOOl0I = v53851:Create(a73b89c71, _Ol110II1II, {TextTransparency = 1})
-        
-        a23b36c50:Play()
-        _IIOIl0IOOl0I:Play()
-        
-        a23b36c50.Completed:Connect(function()
-            a73b89c71:Destroy()
-            L561_63 = true
-            a49b45c10()
+    -- Quick show UI (no freeze intro)
+    task.defer(function()
+        L561_63 = true
+        a49b45c10()
+        pcall(function()
+            nexlib:Notification("R_V0id Hub", "Loaded", 2)
         end)
-    end;
-
-    task.spawn(update_targeting)
+    end)
     
     return __hwEbYRFKK;
 end;
@@ -1589,6 +1525,17 @@ local v34672 = false
 local a72b52c65 = false
 local a77b58c11 = false
 
+-- Auto Shot / Full Auto (from R_V0id)
+local autoShotEnabled = false
+local fullAutoEnabled = false
+local autoShotInterval = 0.05
+local fullAutoInterval = 0.03
+local autoShotAimPart = "Head"
+local autoShotLastAt = 0
+local fullAutoLastAt = 0
+local autoShotMouseHeld = false
+local autoShotSearchRadius = 5
+
 local shaderEnabled = false
 
 local _3323x151 = false
@@ -1621,7 +1568,7 @@ local L859_75 = false
 local a16b37c97 = ""
 
 local a67b95c93 = false
-local _0xe7ca = "vr"
+local _0xe7ca = "VR"
 local _0x479f = {
     ["Dark Sky"] = {
         ["SkyboxUp"] = "rbxassetid://570555929",
@@ -1660,34 +1607,80 @@ local _0x479f = {
 
 local function get_root_part(_00IO01)
     local v56079 = game:GetService("Lighting")
-    local L224_38 = v56079:FindFirstChild("CustomSkybox")
     
     if not L859_75 or not _00IO01 or _00IO01 == "" then
-        if L224_38 then L224_38:Destroy() end
+        local old = v56079:FindFirstChild("CustomSkybox")
+        if old then old:Destroy() end
         return
     end
     
     local a91b73c94 = _0x479f[_00IO01]
-    if a91b73c94 then
-        if not L224_38 then
-            L224_38 = Instance.new("Sky")
-            L224_38.Name = "CustomSkybox"
-            L224_38.Parent = v56079
+    if not a91b73c94 then return end
+
+    -- nuke every other Sky so game default can't steal priority
+    for _, child in ipairs(v56079:GetChildren()) do
+        if child:IsA("Sky") and child.Name ~= "CustomSkybox" then
+            pcall(function() child:Destroy() end)
         end
-        
-        L224_38.SkyboxUp = ""
-        L224_38.SkyboxRt = ""
-        L224_38.SkyboxDn = ""
-        L224_38.SkyboxFt = ""
-        L224_38.SkyboxLf = ""
-        L224_38.SkyboxBk = ""
-        L224_38.SunTextureId = ""
-        
-        for prop, L987_53 in pairs(a91b73c94) do
+    end
+
+    local L224_38 = v56079:FindFirstChild("CustomSkybox")
+    if not L224_38 or not L224_38:IsA("Sky") then
+        if L224_38 then pcall(function() L224_38:Destroy() end) end
+        L224_38 = Instance.new("Sky")
+        L224_38.Name = "CustomSkybox"
+        L224_38.Parent = v56079
+    end
+
+    for prop, L987_53 in pairs(a91b73c94) do
+        if L224_38[prop] ~= L987_53 then
             L224_38[prop] = L987_53
         end
     end
+    -- re-parent last so it wins Lighting sky priority
+    if L224_38.Parent ~= v56079 then
+        L224_38.Parent = v56079
+    else
+        L224_38.Parent = nil
+        L224_38.Parent = v56079
+    end
 end
+
+local function force_skybox()
+    if not L859_75 or not a16b37c97 or a16b37c97 == "" then return end
+    pcall(get_root_part, a16b37c97)
+end
+
+-- hard lock: every frame while enabled
+RunService.Heartbeat:Connect(function()
+    if L859_75 and a16b37c97 and a16b37c97 ~= "" then
+        force_skybox()
+    end
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.defer(force_skybox)
+    task.delay(0.25, force_skybox)
+    task.delay(0.75, force_skybox)
+    task.delay(1.5, force_skybox)
+end)
+
+pcall(function()
+    local lighting = game:GetService("Lighting")
+    lighting.ChildRemoved:Connect(function(child)
+        if child:IsA("Sky") then
+            task.defer(force_skybox)
+        end
+    end)
+    lighting.ChildAdded:Connect(function(child)
+        if child:IsA("Sky") and child.Name ~= "CustomSkybox" then
+            task.defer(function()
+                pcall(function() child:Destroy() end)
+                force_skybox()
+            end)
+        end
+    end)
+end)
 
 local _690_719 = false
 local _650_628 = ""
@@ -1995,15 +1988,53 @@ end)
     end)
 end
 
-local L292_59 = LocalPlayer.PlayerScripts
-local L767_25 = L292_59:WaitForChild("Controllers", 10)
+-- Safe module load (no hang / no crash if missing)
+local L292_59 = LocalPlayer:FindFirstChild("PlayerScripts") or LocalPlayer:WaitForChild("PlayerScripts", 5)
+local L767_25 = L292_59 and L292_59:FindFirstChild("Controllers")
+if not L767_25 and L292_59 then
+    L767_25 = L292_59:WaitForChild("Controllers", 3)
+end
 
-local _0xfaed = require(ReplicatedStorage.Modules:WaitForChild("EnumLibrary", 10))
-if _0xfaed then _0xfaed:WaitForEnumBuilder() end
+local _0xfaed = nil
+pcall(function()
+    local m = ReplicatedStorage:FindFirstChild("Modules")
+    local el = m and m:FindFirstChild("EnumLibrary")
+    if el then
+        _0xfaed = require(el)
+        -- skip WaitForEnumBuilder (can hang forever)
+    end
+end)
 
-local L673_86 = require(ReplicatedStorage.Modules:WaitForChild("CosmeticLibrary", 10))
-local a17b70c23 = require(ReplicatedStorage.Modules:WaitForChild("ItemLibrary", 10))
-local _3470x248 = require(L767_25:WaitForChild("PlayerDataController", 10))
+local L673_86 = nil
+pcall(function()
+    local m = ReplicatedStorage:FindFirstChild("Modules")
+    local cl = m and m:FindFirstChild("CosmeticLibrary")
+    if cl then L673_86 = require(cl) end
+end)
+if not L673_86 then
+    L673_86 = { Cosmetics = {}, OwnsCosmetic = function() return false end }
+end
+
+local a17b70c23 = nil
+pcall(function()
+    local m = ReplicatedStorage:FindFirstChild("Modules")
+    local il = m and m:FindFirstChild("ItemLibrary")
+    if il then a17b70c23 = require(il) end
+end)
+if not a17b70c23 then
+    a17b70c23 = { Items = {}, ViewModels = {}, GetViewModelImageFromWeaponData = function() return nil end }
+end
+
+local _3470x248 = nil
+pcall(function()
+    if L767_25 then
+        local pdc = L767_25:FindFirstChild("PlayerDataController") or L767_25:WaitForChild("PlayerDataController", 3)
+        if pdc then _3470x248 = require(pdc) end
+    end
+end)
+if not _3470x248 then
+    _3470x248 = { Get = function() return nil end, GetWeaponData = function() return nil end, CurrentData = nil }
+end
 
 local v61318, _0x8a53 = {}, {}
 local a51b52c84, L259_66 = nil, nil
@@ -2066,7 +2097,7 @@ _0x8a53 = _902_287.favorites or {}
 end
 local _OOlOI10II = false
 
-local a28b84c60 = L673_86.OwnsCosmetic
+local a28b84c60 = L673_86.OwnsCosmetic or function() return false end
 L673_86.OwnsCosmetic = function(self, _0xe04e, _00IO01, _0x9c10)
     if not _OOlOI10II then
         return a28b84c60(self, _0xe04e, _00IO01, _0x9c10)
@@ -2103,7 +2134,7 @@ L673_86.OwnsCosmeticForWeapon = function(self, _0xe04e, _00IO01, _0x9c10)
 return false
 end
 
-local a58b60c97 = _3470x248.Get
+local a58b60c97 = (type(_3470x248.Get) == "function" and _3470x248.Get) or function() return nil end
 _3470x248.Get = function(self, key)
     local a91b73c94 = a58b60c97(self, key)
     if not _OOlOI10II then
@@ -2134,7 +2165,7 @@ if key == "FavoritedCosmetics" then
     return a91b73c94
 end
 
-local _954_834 = _3470x248.GetWeaponData
+local _954_834 = (type(_3470x248.GetWeaponData) == "function" and _3470x248.GetWeaponData) or function() return nil end
 _3470x248.GetWeaponData = function(self, v55117)
     local a91b73c94 = _954_834(self, v55117)
     if not a91b73c94 then return nil end
@@ -2152,7 +2183,7 @@ end
 local v41367
 pcall(function() v41367 = require(L767_25:WaitForChild("FighterController", 10)) end)
 
-if false and hookmetamethod then
+if hookmetamethod then
     local _2909x751 = ReplicatedStorage:FindFirstChild("Remotes")
     local _6787x894 = _2909x751 and _2909x751:FindFirstChild("Data")
     local a58b20c93 = _6787x894 and _6787x894:FindFirstChild("EquipCosmetic")
@@ -2365,9 +2396,24 @@ pcall(function()
         end
     end
 end)
-_0xc8ed()
+pcall(_0xc8ed)
 
-local __tYotbbggFILt = nexlib:Window("할무발크 free")
+local __tYotbbggFILt = nexlib:Window("RIVALS R_V0id Hub - Premium Build")
+_G.__HalmuWindow = __tYotbbggFILt
+task.defer(function()
+    pcall(function()
+        local mf = _7765x301:FindFirstChild("MainFrame", true)
+        if mf then
+            mf.Visible = true
+            mf.Parent = _7765x301
+        end
+        _7765x301.Enabled = true
+        if not _7765x301.Parent then
+            _7765x301.Parent = game:GetService("Players").LocalPlayer.PlayerGui
+        end
+        nexlib:Notification("R_V0id Hub", "R_V0id Hub Ready", 3)
+    end)
+end)
 
 local _1OIIll01O = {
     ["Combat"] = __tYotbbggFILt:Tab("Combat"),
@@ -2452,6 +2498,24 @@ __lQDLsxFW:Toggle("enabled", false, function(_01O001l00)
     triggerbotEnabled = _01O001l00
 end)
 
+local autoShotSec = _1OIIll01O["Combat"]:Section("Auto Shot", 1)
+autoShotSec:Toggle("enabled", false, function(v) autoShotEnabled = v end)
+autoShotSec:Toggle("full auto", false, function(v) fullAutoEnabled = v end)
+autoShotSec:Dropdown("hitbox", {"Head", "HumanoidRootPart", "Torso"}, "Head", function(v) autoShotAimPart = v end)
+autoShotSec:Slider("shot speed 1x-5x", 1, 5, 1, 0, function(mult)
+    mult = math.floor((tonumber(mult) or 1) + 0.5)
+    local map = {[1]=0.05,[2]=0.025,[3]=0.017,[4]=0.01,[5]=0.005}
+    autoShotInterval = map[mult] or 0.05
+end)
+autoShotSec:Slider("fullauto 1x-11 max", 1, 11, 1, 0, function(mult)
+    mult = math.floor((tonumber(mult) or 1) + 0.5)
+    local map = {
+        [1]=0.15,[2]=0.1,[3]=0.08,[4]=0.06,[5]=0.05,
+        [6]=0.04,[7]=0.03,[8]=0.025,[9]=0.02,[10]=0.015,[11]=0.005
+    }
+    fullAutoInterval = map[mult] or 0.03
+end)
+
 local a36b44c68 = _1OIIll01O["Combat"]:Section("weapons", 2)
 a36b44c68:Toggle("no spread", false, function(_01O001l00)
     L115_50 = _01O001l00
@@ -2481,9 +2545,9 @@ end)
 
 local v11560 = _1OIIll01O["Combat"]:Section("orb,void", 2)
 v11560:Toggle("orbit", false, function(_01O001l00) flyEnabled = _01O001l00 end)
-v11560:Slider("orbit studs", 5, 10000, 50000000, 0, function(_01O001l00) _8080x566 = _01O001l00 end)
+v11560:Slider("orbit studs", 5, 100000000, 50000000, 0, function(_01O001l00) _8080x566 = _01O001l00 end)
 v11560:Toggle("void spam", false, function(_01O001l00) heightLockEnabled = _01O001l00 end)
-v11560:Slider("void spam studs", 50, 50000000, 50, 0, function(_01O001l00) lockHeight = _01O001l00 end)
+v11560:Slider("void spam studs", 50, 100000000, 50, 0, function(_01O001l00) lockHeight = _01O001l00 end)
 
 local L907_70 = _1OIIll01O["Visuals"]:Section("environment", 1)
 L907_70:Toggle("Fullbright", false, function(_01O001l00)
@@ -2545,6 +2609,56 @@ _0x2b8e:Toggle("unlock all", false, function(_01O001l00)
         if _3470x248 and _3470x248.CurrentData then
             _3470x248.CurrentData:Replicate("CosmeticInventory")
             _3470x248.CurrentData:Replicate("WeaponInventory")
+        end
+    end)
+end)
+
+local noHandsRunning = false
+local noHandsSec = _1OIIll01O["Visuals"]:Section("No Hands", 1)
+noHandsSec:Button("Execute", function()
+    if noHandsRunning then return end
+    noHandsRunning = true
+    task.spawn(function()
+        local allowedFists = {
+            "Boxing Gloves",
+            "Crab Claws",
+            "Fist",
+            "Pirate Hook",
+            "Fists of Hurt",
+            "Brass Knuckles",
+            "Festive Fists",
+            "Glorious Fists",
+            "Pumpkin Claws",
+            "Spy Gloves",
+        }
+        while true do
+            pcall(function()
+                local viewModels = game.Workspace:FindFirstChild("ViewModels")
+                if not viewModels then return end
+                local firstPerson = viewModels:FindFirstChild("FirstPerson")
+                if not firstPerson then return end
+                for _, playerFolder in ipairs(firstPerson:GetChildren()) do
+                    local folderName = playerFolder.Name
+                    local skipDeletion = false
+                    for _, player in ipairs(Players:GetPlayers()) do
+                        for _, fistName in ipairs(allowedFists) do
+                            local targetName = player.Name .. " - Fists - " .. fistName
+                            if folderName == targetName then
+                                skipDeletion = true
+                                break
+                            end
+                        end
+                        if skipDeletion then break end
+                    end
+                    if not skipDeletion then
+                        local leftArm = playerFolder:FindFirstChild("LeftArm")
+                        if leftArm then leftArm:Destroy() end
+                        local rightArm = playerFolder:FindFirstChild("RightArm")
+                        if rightArm then rightArm:Destroy() end
+                    end
+                end
+            end)
+            task.wait(0.1)
         end
     end)
 end)
@@ -2643,7 +2757,7 @@ _0xbc8b:Toggle("device spoofer", false, function(_01O001l00)
     a67b95c93 = _01O001l00
 end)
 
-_0xbc8b:Dropdown("device selection", {"vr", "touch", "gamepad", "mousekeyboard"}, "vr", function(_01O001l00)
+_0xbc8b:Dropdown("device selection", {"VR", "Mobile", "Controller", "Computer"}, "VR", function(_01O001l00)
     _0xe7ca = _01O001l00
 end)
 local _0xb815 = _1OIIll01O["Misc"]:Section("third person", 2)
@@ -2680,12 +2794,6 @@ local _IIl1OI111 = L422_11:Dropdown("Theme Color", {"Sky Blue", "Red", "Lime Gre
     elseif colorName == "Purple" then nexlib.accentclr = Color3.fromRGB(180, 75, 255)
     elseif colorName == "Orange" then nexlib.accentclr = Color3.fromRGB(255, 140, 0)
     end
-end)
-
-L422_11:Button("Unload UI", function()
-    nexlib:Notification("Shutting Down", "Goodbye!", 1.5)
-    task.wait(1.5)
-    __tYotbbggFILt:Destroy()
 end)
 
 local _01IIlO01OI = _1OIIll01O["UI Settings"]:Section("Configuration", 2)
@@ -2969,11 +3077,17 @@ local function restore_reload()
 _1OIOIOI0I = false
 end
 
+-- Lag-fixed: only scan GC on state change, re-apply values every ~1.5s
+local _last_gc_scan = 0
 RunService.Heartbeat:Connect(function()
+    local now = tick()
     if a77b85c82 then
-        pcall(function()
-            override_gc_attribute("ShootCooldown", 0)
-        end)
+        if not v50691 or (now - _last_gc_scan) > 1.5 then
+            pcall(function()
+                override_gc_attribute("ShootCooldown", 0)
+            end)
+            _last_gc_scan = now
+        end
         v50691 = true
     elseif v50691 then
         pcall(function()
@@ -2981,10 +3095,14 @@ RunService.Heartbeat:Connect(function()
         end)
         v50691 = false
     end
-if a72b52c65 then
-        pcall(function()
-            override_gc_attribute("ShootRecoil", 0)
-        end)
+
+    if a72b52c65 then
+        if not a77b58c11 or (now - _last_gc_scan) > 1.5 then
+            pcall(function()
+                override_gc_attribute("ShootRecoil", 0)
+            end)
+            _last_gc_scan = now
+        end
         a77b58c11 = true
     elseif a77b58c11 then
         pcall(function()
@@ -2994,7 +3112,9 @@ if a72b52c65 then
     end
 
     if v34672 then
-        pcall(enable_instant_reload)
+        if not _1OIOIOI0I then
+            pcall(enable_instant_reload)
+        end
     elseif _1OIOIOI0I then
         pcall(restore_reload)
     end
@@ -3016,22 +3136,32 @@ LocalPlayer.CharacterAdded:Connect(function(__CydKJDoaY)
     end
 end)
 
+local _last_device_spoof = nil
+local function fire_device_spoof(mode)
+    pcall(function()
+        local _2909x751 = ReplicatedStorage:FindFirstChild("Remotes")
+        local _7826x188 = _2909x751 and _2909x751:FindFirstChild("Replication") or _2909x751
+        local _5413x532 = _7826x188 and _7826x188:FindFirstChild("Fighter")
+        local v70087 = _5413x532 and _5413x532:FindFirstChild("SetControls")
+        if v70087 and v70087:IsA("RemoteEvent") then
+            -- map display name -> server value
+            if mode == "VR" then v70087:FireServer("VR")
+            elseif mode == "Mobile" then v70087:FireServer("Touch")
+            elseif mode == "Controller" then v70087:FireServer("Gamepad")
+            else v70087:FireServer("MouseKeyboard") end  -- Computer
+        end
+    end)
+end
 task.spawn(function()
     while true do
         task.wait(1)
         if a67b95c93 then
-            pcall(function()
-                local _2909x751 = ReplicatedStorage:FindFirstChild("Remotes")
-                local _7826x188 = _2909x751 and _2909x751:FindFirstChild("Replication") or _2909x751
-                local _5413x532 = _7826x188 and _7826x188:FindFirstChild("Fighter")
-                local v70087 = _5413x532 and _5413x532:FindFirstChild("SetControls")
-                if v70087 and v70087:IsA("RemoteEvent") then
-                    if _0xe7ca == "vr" then v70087:FireServer("VR")
-                    elseif _0xe7ca == "touch" then v70087:FireServer("Touch")
-                    elseif _0xe7ca == "gamepad" then v70087:FireServer("Gamepad")
-                    elseif _0xe7ca == "mousekeyboard" then v70087:FireServer("MouseKeyboard") end
-                end
-            end)
+            fire_device_spoof(_0xe7ca)
+            _last_device_spoof = _0xe7ca
+        elseif _last_device_spoof then
+            -- turn off: reset to Computer
+            fire_device_spoof("Computer")
+            _last_device_spoof = nil
         end
     end
 end)
@@ -3157,7 +3287,181 @@ local function has_line_of_sight(_IOI1l0I100, v11706)
     return __hMUaxPzN ~= nil and _9606x893 ~= nil and __hMUaxPzN == _9606x893
 end
 
+
 -- ============================================================================
+-- SECTION: Auto Shot + Full Auto
+-- ============================================================================
+UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        autoShotMouseHeld = true
+    end
+end)
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        autoShotMouseHeld = false
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if not autoShotEnabled and not fullAutoEnabled then return end
+
+    local now = tick()
+    local __MAwXiJM = nil
+    local _IIOl1OI11O00 = nil
+    local _0xf72a = nil
+    local _9817x625 = nil
+
+    pcall(function()
+        __MAwXiJM = ReplicatedStorage.Remotes.Replication.Fighter.UseItem
+    end)
+    if not __MAwXiJM then return end
+
+    pcall(function()
+        local v27885 = require(ReplicatedStorage.Modules.EnumLibrary)
+        _IIOl1OI11O00 = v27885:ToEnum("StartShooting")
+    end)
+    if _IIOl1OI11O00 == nil then return end
+
+    pcall(function()
+        _9817x625 = require(LocalPlayer.PlayerScripts.Controllers.FighterController)
+        local _0x3584 = _9817x625 and _9817x625.LocalFighter
+        local _549_282 = _0x3584 and _0x3584.EquippedItem
+        if not _549_282 then return end
+        local L704_40, L987_53 = pcall(function() return _549_282:Get("ObjectID") end)
+        if L704_40 and L987_53 then
+            _0xf72a = L987_53
+        else
+            L704_40, L987_53 = pcall(function() return _549_282.Data and _549_282.Data.ObjectID end)
+            if L704_40 then _0xf72a = L987_53 end
+        end
+    end)
+    if not _0xf72a then return end
+
+    local function teleport_character(originPos, _IOI1l0I100)
+        local L501_16 = _IOI1l0I100.Position
+        local _0xb60d = CFrame.lookAt(originPos, L501_16)
+        local _0Il0I11O, _1897x442, _0xefad = _0xb60d:ToOrientation()
+        local a49b75c71 = {
+            [utf8.char(0)] = originPos.X, [utf8.char(1)] = originPos.Y, [utf8.char(2)] = originPos.Z,
+            [utf8.char(3)] = _0Il0I11O, [utf8.char(4)] = _1897x442, [utf8.char(5)] = _0xefad,
+        }
+        local a12b15c22 = _IOI1l0I100.CFrame:ToObjectSpace(CFrame.new(L501_16))
+        local _lOl1lI0llll0, _1l00IOl101Il, __CtOClXPOnz = a12b15c22:ToOrientation()
+        return {
+            [utf8.char(1)] = {
+                [utf8.char(0)] = a49b75c71,
+                [utf8.char(1)] = a49b75c71,
+                [utf8.char(2)] = _IOI1l0I100,
+                [utf8.char(3)] = {
+                    [utf8.char(0)] = a12b15c22.X, [utf8.char(1)] = a12b15c22.Y, [utf8.char(2)] = a12b15c22.Z,
+                    [utf8.char(3)] = _lOl1lI0llll0, [utf8.char(4)] = _1l00IOl101Il, [utf8.char(5)] = __CtOClXPOnz,
+                },
+            },
+        }
+    end
+
+    local cam = workspace.CurrentCamera
+    if not cam then return end
+    local camPos = cam.CFrame.Position
+
+    if autoShotEnabled and (now - autoShotLastAt) >= (autoShotInterval or 0.05) then
+        local want = autoShotAimPart or "Head"
+        local best, bestD = nil, math.huge
+        local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if myRoot then
+            for _, __RrBoATP in ipairs(Players:GetPlayers()) do
+                if __RrBoATP == LocalPlayer then continue end
+                if is_teammate(__RrBoATP) then continue end
+                if get_character(__RrBoATP) then continue end
+                if get_player_from_part(__RrBoATP) then continue end
+                local char = __RrBoATP.Character
+                if not char then continue end
+                local a87b18c82 = char:FindFirstChildWhichIsA("Humanoid")
+                if not a87b18c82 or a87b18c82.Health <= 0 then continue end
+                local L405_52 = char:FindFirstChild(want) or char:FindFirstChild("HitboxHead") or char:FindFirstChild("Head")
+                if not L405_52 then continue end
+                local d = (myRoot.Position - L405_52.Position).Magnitude
+                if d < bestD then best, bestD = L405_52, d end
+            end
+        end
+        if best then
+            local origin = camPos
+            local model = best:FindFirstAncestorOfClass("Model")
+            local rp = RaycastParams.new()
+            rp.FilterType = Enum.RaycastFilterType.Exclude
+            rp.IgnoreWater = true
+            rp.FilterDescendantsInstances = { LocalPlayer.Character, model }
+            local dir0 = best.Position - camPos
+            local blocked = dir0.Magnitude > 0 and workspace:Raycast(camPos, dir0, rp) ~= nil
+            if blocked then
+                local r = autoShotSearchRadius or 5
+                local found = false
+                local dx = {1,-1,0,0,0,0}
+                local dy = {0,0,1,-1,0,0}
+                local dz = {0,0,0,0,1,-1}
+                for i = 1, 6 do
+                    local cand = camPos + Vector3.new(dx[i], dy[i], dz[i]) * r
+                    local d2 = best.Position - cand
+                    if d2.Magnitude > 0 and workspace:Raycast(cand, d2, rp) == nil then
+                        origin = cand
+                        found = true
+                        break
+                    end
+                end
+                if not found then
+                    best = nil
+                end
+            end
+            if best then
+                local v84604 = teleport_character(origin, best)
+                pcall(function() __MAwXiJM:FireServer(_0xf72a, _IIOl1OI11O00, v84604, nil) end)
+                autoShotLastAt = now
+            end
+        end
+    end
+
+    if fullAutoEnabled and autoShotMouseHeld and (now - fullAutoLastAt) >= (fullAutoInterval or 0.03) then
+        local L501_16 = camPos + cam.CFrame.LookVector * 500
+        local _0xb60d = cam.CFrame
+        local _0Il0I11O, _1897x442, _0xefad = _0xb60d:ToOrientation()
+        local a49b75c71 = {
+            [utf8.char(0)] = camPos.X, [utf8.char(1)] = camPos.Y, [utf8.char(2)] = camPos.Z,
+            [utf8.char(3)] = _0Il0I11O, [utf8.char(4)] = _1897x442, [utf8.char(5)] = _0xefad,
+        }
+        local dummy = workspace:FindFirstChild("Halmu_AS_Cache")
+        if not dummy then
+            dummy = Instance.new("Part")
+            dummy.Name = "Halmu_AS_Cache"
+            dummy.Size = Vector3.new(0.1, 0.1, 0.1)
+            dummy.Transparency = 1
+            dummy.CanCollide = false
+            dummy.Anchored = true
+            dummy.Parent = workspace
+        end
+        dummy.CFrame = CFrame.new(L501_16)
+        local a12b15c22 = dummy.CFrame:ToObjectSpace(CFrame.new(L501_16))
+        local _lOl1lI0llll0, _1l00IOl101Il, __CtOClXPOnz = a12b15c22:ToOrientation()
+        local v84604 = {
+            [utf8.char(1)] = {
+                [utf8.char(0)] = a49b75c71,
+                [utf8.char(1)] = a49b75c71,
+                [utf8.char(2)] = dummy,
+                [utf8.char(3)] = {
+                    [utf8.char(0)] = a12b15c22.X, [utf8.char(1)] = a12b15c22.Y, [utf8.char(2)] = a12b15c22.Z,
+                    [utf8.char(3)] = _lOl1lI0llll0, [utf8.char(4)] = _1l00IOl101Il, [utf8.char(5)] = __CtOClXPOnz,
+                },
+            },
+        }
+        pcall(function() __MAwXiJM:FireServer(_0xf72a, _IIOl1OI11O00, v84604, nil) end)
+        pcall(function()
+            local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
+            if tool then tool:Activate() end
+        end)
+        fullAutoLastAt = now
+    end
+end)
+
 -- SECTION: FOV Circles (Aimbot + Silent Aim)
 -- ============================================================================
 local fovGui = Instance.new("ScreenGui")
@@ -3424,7 +3728,6 @@ return
     end
     return _0xf0da
 end
-local _late=[===[
 
 __LkyqXAIbS = {}
 create_esp_entry = function(player)
@@ -3722,9 +4025,6 @@ RunService.Heartbeat:Connect(function()
         end
     end
 end)
-]===]
-local _f,_e=loadstring(_late)
-if _f then _f() else warn("late:",_e) end
 
 task.defer(function()
     pcall(function()
@@ -3739,3 +4039,19 @@ task.defer(function()
         game:GetService("UserInputService").MouseIconEnabled=true
     end)
 end)
+
+-- UI recovery: if window never created, force it
+if not _G.__HalmuWindow then
+    pcall(function()
+        if not _7765x301.Parent then
+            pcall(function() _7765x301.Parent = game:GetService("CoreGui") end)
+            if not _7765x301.Parent then
+                _7765x301.Parent = game:GetService("Players").LocalPlayer.PlayerGui
+            end
+        end
+        local w = nexlib:Window("RIVALS R_V0id Hub - Premium Build")
+        _G.__HalmuWindow = w
+        local t = w:Tab("Combat")
+        t:Section("info", 1):Label("UI recovery mode - rejoin if needed")
+    end)
+end
