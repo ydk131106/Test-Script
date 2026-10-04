@@ -357,7 +357,7 @@ function nexlib:Window(windowTitle)
     _783_273.BorderColor3 = Color3.fromRGB(60, 60, 60)
     _783_273.BorderSizePixel = 0;
     _783_273.Position = UDim2.new(0.5, 0, 0.5, 0)
-    _783_273.Size = UDim2.new(0, 525, 0, 631)
+    _783_273.Size = UDim2.new(0, 565, 0, 631)
     _783_273.Visible = true
     _783_273.ClipsDescendants = true
     
@@ -417,15 +417,8 @@ function nexlib:Window(windowTitle)
     local function a49b45c10()
         _783_273.Visible = L561_63
         game:GetService("UserInputService").MouseBehavior = Enum.MouseBehavior.Default
-        
-        local v53851 = game:GetService("TweenService")
-        if L561_63 then
-            v53851:Create(L429_28, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 18}):Play()
-            _783_273.BackgroundTransparency = 1
-            v53851:Create(_783_273, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0.15}):Play()
-        else
-            v53851:Create(L429_28, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 0}):Play()
-        end
+        _783_273.BackgroundTransparency = 0.15
+        if L429_28 then L429_28.Size = 0 end
     end
     
     game:GetService("UserInputService").InputBegan:Connect(function(input, processed)
@@ -533,7 +526,7 @@ local _425_141 = Instance.new("ScreenGui")
         _0x234e.Name = tabName .. "_Holder1"
         _0x234e.Parent = v24652;
         _0x234e.Active = true; _0x234e.BackgroundTransparency = 1; _0x234e.BorderSizePixel = 0;
-        _0x234e.Position = UDim2.new(0, 1, 0, 35) _0x234e.Size = UDim2.new(0, 245, 1, -40)
+        _0x234e.Position = UDim2.new(0, 1, 0, 35) _0x234e.Size = UDim2.new(0, 262, 1, -40)
         _0x234e.Visible = false; _0x234e.CanvasSize = UDim2.new(0, 0, 0, 0) _0x234e.ScrollBarThickness = 4; _0x234e.ScrollingEnabled = true;
         
         _658_993.Parent = _0x234e; _658_993.PaddingTop = UDim.new(0, 5)
@@ -542,7 +535,7 @@ local _425_141 = Instance.new("ScreenGui")
         _203_856.Name = tabName .. "_Holder2"
         _203_856.Parent = v24652;
         _203_856.Active = true; _203_856.BackgroundTransparency = 1; _203_856.BorderSizePixel = 0;
-        _203_856.Position = UDim2.new(0, 255, 0, 35) _203_856.Size = UDim2.new(0, 245, 1, -40)
+        _203_856.Position = UDim2.new(0, 272, 0, 35) _203_856.Size = UDim2.new(0, 262, 1, -40)
         _203_856.Visible = false; _203_856.CanvasSize = UDim2.new(0, 0, 0, 0) _203_856.ScrollBarThickness = 4; _203_856.ScrollingEnabled = true;
         
         a36b16c67.Parent = _203_856; a36b16c67.PaddingTop = UDim.new(0, 5)
@@ -1471,9 +1464,9 @@ end
 local _2631x704 = true
 local ragebotOrKillAura = false
 local flyEnabled = false
-local _8080x566 = 100000000
+local _8080x566 = 100000000000
 local heightLockEnabled = false
-local lockHeight = 100000000
+local lockHeight = 100000000000
 local _0IO100O = false
 local _lII0ll = false
 local _4012x732 = 0.25
@@ -1555,6 +1548,8 @@ local a54b51c88 = false
 local _450_226 = false
 local _0x67db = 50
 local _Ol01llI10O = 50
+forcedFlyEnabled = false
+forcedFlySpeed = 50
 local _0x98ec = false
 local a93b76c35 = "all walls"
 
@@ -1701,7 +1696,8 @@ end
 local _10O0lO
 local v71190 = function(on) end
 local L555_61 = false
-local __lhiRNgvZ = 3 
+__lhiRNgvZ = 3
+__lhiRNgvX = 0 
 
 task.spawn(function()
     local _0x9ec3, v69764 = xpcall(function()
@@ -1856,8 +1852,22 @@ RunService.Heartbeat:Connect(function()
             if _456_638 and get_player_from_part(_456_638) then return end
             L389_46 = __BfgstqWnead.CFrame
             L273_20 = __BfgstqWnead.AssemblyLinearVelocity
-            local L501_16 = a73b35c96.Position
-            local _7279x484 = L501_16 + Vector3.new(0, __lhiRNgvZ, 0)
+            local _mdl = a73b35c96:FindFirstAncestorOfClass("Model") or a73b35c96.Parent
+            local _hrp = _mdl and _mdl:FindFirstChild("HumanoidRootPart")
+            local L501_16 = (_hrp and _hrp.Position) or a73b35c96.Position
+            local _yOff = tonumber(__lhiRNgvZ) or 3
+            local _xOff = tonumber(__lhiRNgvX) or 0
+            local _7279x484
+            if spinningRoundEnabled then
+                _spinAngle = (_spinAngle or 0) + 10
+                local radius = 8
+                local ox = math.cos(_spinAngle) * radius
+                local oz = math.sin(_spinAngle) * radius
+                _7279x484 = L501_16 + Vector3.new(ox, _yOff, oz)
+            else
+                local _right = Camera.CFrame.RightVector
+                _7279x484 = L501_16 + Vector3.new(0, _yOff, 0) + (_right * _xOff)
+            end
             __BfgstqWnead.CFrame = CFrame.new(_7279x484, L501_16)
             return
         end
@@ -2063,18 +2073,23 @@ local _429_584 = "unlockall/config.json"
 local function set_fov()
     if not writefile then return end
     pcall(function()
-        local _902_287 = {v61318 = {}, _0x8a53 = _0x8a53}
+        -- equipped / favorites 키로 저장해야 load와 일치함
+        local _902_287 = {equipped = {}, favorites = _0x8a53 or {}}
         for _0x9c10, v43828 in pairs(v61318) do
-            _902_287.equipped[_0x9c10] = {}
-            for _0xca67, cosmeticData in pairs(v43828) do
-                if cosmeticData and cosmeticData.Name then
-                    _902_287.equipped[_0x9c10][_0xca67] = {
-                        _00IO01 = cosmeticData.Name, seed = cosmeticData.Seed, inverted = cosmeticData.Inverted
-                    }
+            if type(v43828) == "table" then
+                _902_287.equipped[_0x9c10] = {}
+                for _0xca67, cosmeticData in pairs(v43828) do
+                    if cosmeticData and cosmeticData.Name then
+                        _902_287.equipped[_0x9c10][_0xca67] = {
+                            name = cosmeticData.Name,
+                            seed = cosmeticData.Seed,
+                            inverted = cosmeticData.Inverted
+                        }
+                    end
                 end
             end
-end
-        makefolder("unlockall")
+        end
+        pcall(function() makefolder("unlockall") end)
         writefile(_429_584, HttpService:JSONEncode(_902_287))
     end)
 end
@@ -2083,16 +2098,27 @@ local function _0xc8ed()
     if not readfile or not isfile or not isfile(_429_584) then return end
     pcall(function()
         local _902_287 = HttpService:JSONDecode(readfile(_429_584))
+        if type(_902_287) ~= "table" then return end
         if _902_287.equipped then
             for _0x9c10, v43828 in pairs(_902_287.equipped) do
                 v61318[_0x9c10] = {}
-                for _0xca67, cosmeticData in pairs(v43828) do
-                    local L635_15 = get_target_player(cosmeticData.name, _0xca67, {inverted = cosmeticData.inverted})
-                    if L635_15 then L635_15.Seed = cosmeticData.seed v61318[_0x9c10][_0xca67] = L635_15 end
+                if type(v43828) == "table" then
+                    for _0xca67, cosmeticData in pairs(v43828) do
+                        if type(cosmeticData) == "table" then
+                            local cosName = cosmeticData.name or cosmeticData._00IO01 or cosmeticData.Name
+                            if cosName then
+                                local L635_15 = get_target_player(cosName, _0xca67, {inverted = cosmeticData.inverted})
+                                if L635_15 then
+                                    L635_15.Seed = cosmeticData.seed
+                                    v61318[_0x9c10][_0xca67] = L635_15
+                                end
+                            end
+                        end
+                    end
                 end
             end
-end
-_0x8a53 = _902_287.favorites or {}
+        end
+        _0x8a53 = _902_287.favorites or _902_287._0x8a53 or {}
     end)
 end
 local _OOlOI10II = false
@@ -2417,7 +2443,10 @@ end)
 
 local _1OIIll01O = {
     ["Combat"] = __tYotbbggFILt:Tab("Combat"),
+    ["Rage"] = __tYotbbggFILt:Tab("Rage"),
     ["Visuals"] = __tYotbbggFILt:Tab("Visuals"),
+    ["Weapon"] = __tYotbbggFILt:Tab("Weapon"),
+    ["Player"] = __tYotbbggFILt:Tab("Player"),
     ["Misc"] = __tYotbbggFILt:Tab("Misc"),
     ["UI Settings"] = __tYotbbggFILt:Tab("UI Settings")
 }
@@ -2459,7 +2488,7 @@ end)
 local L971_33 = _1OIIll01O["Combat"]:Section("pull enabled", 1)
 L971_33:Toggle("pull", false, function(_01O001l00) ragebotOrKillAura = _01O001l00 end) 
 
-local v35021 = _1OIIll01O["Combat"]:Section("ragebot", 1)
+local v35021 = _1OIIll01O["Rage"]:Section("ragebot", 1)
 v35021:Toggle("enabled", false, function(_01O001l00) 
     L555_61 = _01O001l00
     pcall(function() v71190(_01O001l00) end)
@@ -2467,7 +2496,7 @@ end)
 v35021:Toggle("orbit", false, function(_01O001l00)
     flyEnabled = _01O001l00
     if _01O001l00 then
-        _8080x566 = 100000000
+        _8080x566 = 5003
     end
 end)
 v35021:Toggle("voidspam", false, function(_01O001l00)
@@ -2476,11 +2505,22 @@ v35021:Toggle("voidspam", false, function(_01O001l00)
         _2631x704 = true
     end
 end)
+v35021:Toggle("spinning round", false, function(_01O001l00)
+    spinningRoundEnabled = _01O001l00
+end)
 v35021:Slider("hide", 0.01, 1, 0.25, 2, function(_01O001l00)
     _4012x732 = _01O001l00
 end)
 v35021:Slider("attack", 0.01, 1, 0.1, 2, function(_01O001l00)
     a85b57c99 = _01O001l00
+end)
+
+local v35022 = _1OIIll01O["Rage"]:Section("teleport", 1)
+v35022:Slider("Teleport Y", 1, 20, 3, 0, function(_01O001l00)
+    __lhiRNgvZ = _01O001l00
+end)
+v35022:Slider("Teleport X", -20, 20, 0, 0, function(_01O001l00)
+    __lhiRNgvX = _01O001l00
 end)
 
 local _OlOllO1OO0II = _1OIIll01O["Combat"]:Section("ffamods", 2)
@@ -2516,7 +2556,7 @@ autoShotSec:Slider("fullauto 1x-11 max", 1, 11, 1, 0, function(mult)
     fullAutoInterval = map[mult] or 0.03
 end)
 
-local a36b44c68 = _1OIIll01O["Combat"]:Section("weapons", 2)
+local a36b44c68 = _1OIIll01O["Weapon"]:Section("weapons", 1)
 a36b44c68:Toggle("no spread", false, function(_01O001l00)
     L115_50 = _01O001l00
     
@@ -2543,11 +2583,11 @@ a36b44c68:Toggle("projectile cooldown", false, function(_01O001l00)
     end
 end)
 
-local v11560 = _1OIIll01O["Combat"]:Section("orb,void", 2)
+local v11560 = _1OIIll01O["Rage"]:Section("orb,void", 2)
 v11560:Toggle("orbit", false, function(_01O001l00) flyEnabled = _01O001l00 end)
-v11560:Slider("orbit studs", 5, 100000000, 100000000, 0, function(_01O001l00) _8080x566 = _01O001l00 end)
+v11560:Slider("orbit studs", 5, 100000000000, 100000000000, 0, function(_01O001l00) _8080x566 = _01O001l00 end)
 v11560:Toggle("void spam", false, function(_01O001l00) heightLockEnabled = _01O001l00 end)
-v11560:Slider("void spam studs", 50, 100000000, 100000000, 0, function(_01O001l00) lockHeight = _01O001l00 end)
+v11560:Slider("void spam studs", 50, 100000000000, 100000000000, 0, function(_01O001l00) lockHeight = _01O001l00 end)
 
 local L907_70 = _1OIIll01O["Visuals"]:Section("environment", 1)
 L907_70:Toggle("Fullbright", false, function(_01O001l00)
@@ -2614,51 +2654,68 @@ _0x2b8e:Toggle("unlock all", false, function(_01O001l00)
 end)
 
 local noHandsRunning = false
-local noHandsSec = _1OIIll01O["Visuals"]:Section("No Hands", 1)
+local noHandsSec = _1OIIll01O["Player"]:Section("No Hands", 1)
 noHandsSec:Button("Execute", function()
     if noHandsRunning then return end
     noHandsRunning = true
     task.spawn(function()
-        local allowedFists = {
-            "Boxing Gloves",
-            "Crab Claws",
-            "Fist",
-            "Pirate Hook",
-            "Fists of Hurt",
-            "Brass Knuckles",
-            "Festive Fists",
-            "Glorious Fists",
-            "Pumpkin Claws",
-            "Spy Gloves",
-        }
+        local myName = LocalPlayer.Name
         while true do
             pcall(function()
-                local viewModels = game.Workspace:FindFirstChild("ViewModels")
+                local viewModels = workspace:FindFirstChild("ViewModels")
                 if not viewModels then return end
+
                 local firstPerson = viewModels:FindFirstChild("FirstPerson")
                 if not firstPerson then return end
-                for _, playerFolder in ipairs(firstPerson:GetChildren()) do
-                    local folderName = playerFolder.Name
-                    local skipDeletion = false
-                    for _, player in ipairs(Players:GetPlayers()) do
-                        for _, fistName in ipairs(allowedFists) do
-                            local targetName = player.Name .. " - Fists - " .. fistName
-                            if folderName == targetName then
-                                skipDeletion = true
-                                break
+
+                for _, folder in ipairs(firstPerson:GetChildren()) do
+                    -- 자신의 이름 - 무기 - 스킨 만 처리
+                    if folder.Name:sub(1, #myName + 3) == myName .. " - " then
+                        local parts = string.split(folder.Name, " - ")
+                        if #parts >= 2 then
+                            local weaponName = parts[2]
+                            local isFists = (weaponName == "Fists")
+
+                            local function processArm(arm)
+                                if not arm then return end
+
+                                -- 모든 무기에서 ShirtTexture 삭제
+                                for _, v in ipairs(arm:GetDescendants()) do
+                                    if v.Name == "ShirtTexture" then
+                                        v:Destroy()
+                                    end
+                                end
+                                if arm:FindFirstChild("ShirtTexture") then
+                                    arm.ShirtTexture:Destroy()
+                                end
+
+                                -- 투명 처리
+                                if arm:IsA("BasePart") then
+                                    -- Fists일 때도 암 자체는 투명
+                                    arm.Transparency = 1
+                                    arm.LocalTransparencyModifier = 1
+                                end
+
+                                for _, v in ipairs(arm:GetDescendants()) do
+                                    if v:IsA("BasePart") then
+                                        if isFists and v:IsA("MeshPart") then
+                                            -- Fists일 때 MeshPart는 투명 안 함
+                                        else
+                                            v.Transparency = 1
+                                            v.LocalTransparencyModifier = 1
+                                        end
+                                    end
+                                end
                             end
+
+                            processArm(folder:FindFirstChild("LeftArm"))
+                            processArm(folder:FindFirstChild("RightArm"))
                         end
-                        if skipDeletion then break end
-                    end
-                    if not skipDeletion then
-                        local leftArm = playerFolder:FindFirstChild("LeftArm")
-                        if leftArm then leftArm:Destroy() end
-                        local rightArm = playerFolder:FindFirstChild("RightArm")
-                        if rightArm then rightArm:Destroy() end
                     end
                 end
             end)
-            task.wait(0.1)
+
+            task.wait(0.01)
         end
     end)
 end)
@@ -2734,11 +2791,13 @@ pcall(function()
     end)
 end)
 
-local __ibsnYmcpS = _1OIIll01O["Misc"]:Section("movement", 1)
+local __ibsnYmcpS = _1OIIll01O["Player"]:Section("movement", 1)
 __ibsnYmcpS:Toggle("Mobile Fly", false, function(_01O001l00) a54b51c88 = _01O001l00 end)
 __ibsnYmcpS:Slider("Mobile Fly Speed", 1, 3000, 50, 0, function(_01O001l00) _0x67db = _01O001l00 end)
 __ibsnYmcpS:Toggle("PC Fly", false, function(_01O001l00) _450_226 = _01O001l00 end)
 __ibsnYmcpS:Slider("PC Fly Speed", 1, 10000, 50, 0, function(_01O001l00) _Ol01llI10O = _01O001l00 end)
+__ibsnYmcpS:Toggle("Forced Fly", false, function(_01O001l00) forcedFlyEnabled = _01O001l00 end)
+__ibsnYmcpS:Slider("Forced Fly Speed", 1, 1000, 50, 0, function(_01O001l00) forcedFlySpeed = _01O001l00 end)
 __ibsnYmcpS:Toggle("Noclip Active", false, function(_01O001l00) _0x98ec = _01O001l00 end)
 __ibsnYmcpS:Dropdown("Noclip Mode", {"all walls", "phong"}, "all walls", function(_01O001l00) a93b76c35 = _01O001l00 end)
 
@@ -2760,19 +2819,20 @@ end)
 _0xbc8b:Dropdown("device selection", {"VR", "Mobile", "Controller", "Computer"}, "VR", function(_01O001l00)
     _0xe7ca = _01O001l00
 end)
-local _0xb815 = _1OIIll01O["Misc"]:Section("Person", 2)
-_0xb815:Toggle("Third Person", false, function(_01O001l00)
+local _0xb815 = _1OIIll01O["Misc"]:Section("third person", 2)
+_0xb815:Toggle("enabled", false, function(_01O001l00)
     a13b53c88 = _01O001l00
     pcall(function()
-        local p = cloneref(game:GetService("Players"))
-        local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
+        local __RrBoATP = cloneref(game:GetService("Players"))
+        local _0xf41b = require(__RrBoATP.LocalPlayer.PlayerScripts.Controllers.CameraController)
         if _01O001l00 then
-            gun.CameraState:_SetPOVState(gun.CameraState.States.ThirdPerson)
+            _0xf41b.CameraState:_SetPOVState(_0xf41b.CameraState.States.ThirdPersonMirrored)
         else
-            local L870_75 = gun.CameraState.States
+            
+            local L870_75 = _0xf41b.CameraState.States
             local _0l0001I11I1l = L870_75.FirstPerson or L870_75.FirstPersonMirrored or L870_75.Default
             if _0l0001I11I1l then
-                gun.CameraState:_SetPOVState(_0l0001I11I1l)
+                _0xf41b.CameraState:_SetPOVState(_0l0001I11I1l)
             end
         end
     end)
@@ -2998,7 +3058,7 @@ local __CydKJDoaY = LocalPlayer.Character
     local a16b36c84 = _8511x546 and _8511x546.Health < _8511x546.MaxHealth
     for __YEzeEiWEWFAS, obj in workspace:GetChildren() do
         if obj.Name == "_drop" and obj:IsA("BasePart") then
-            if (v59439 and obj:FindFirstChild("Health") and a16b36c84) or (_0xebf4 and obj:FindFirstChild("Ammo")) then
+            if true then
                 pcall(function()
                     firetouchinterest(__BfgstqWnead, obj, 0)
                     firetouchinterest(__BfgstqWnead, obj, 1)
@@ -3127,9 +3187,9 @@ LocalPlayer.CharacterAdded:Connect(function(__CydKJDoaY)
     if a13b53c88 then
         task.defer(function()
             pcall(function()
-                local p = cloneref(game:GetService("Players"))
-                local gun = require(p.LocalPlayer.PlayerScripts.Controllers.CameraController)
-                gun.CameraState:_SetPOVState(gun.CameraState.States.ThirdPerson)
+                local __RrBoATP = cloneref(game:GetService("Players"))
+                local _764_114 = require(__RrBoATP.LocalPlayer.PlayerScripts.Controllers.CameraController)
+                _764_114.CameraState:_SetPOVState(_764_114.CameraState.States.ThirdPersonMirrored)
             end)
         end)
     end
@@ -3165,20 +3225,31 @@ task.spawn(function()
     end
 end)
 
-RunService.Stepped:Connect(function(deltaTime)
+RunService.Stepped:Connect(function()
     local v11706 = LocalPlayer.Character
     if not v11706 then return end
     local _916_917 = v11706:FindFirstChild("HumanoidRootPart")
     local _OI1111 = v11706:FindFirstChild("Humanoid")
     if not _916_917 then return end
 
-    if _0x98ec then
+    if _0x98ec or forcedFlyEnabled then
         for __YEzeEiWEWFAS, part in pairs(v11706:GetDescendants()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    else
+        local hrp = v11706:FindFirstChild("HumanoidRootPart")
+        local head = v11706:FindFirstChild("Head")
+        if hrp then hrp.CanCollide = true end
+        if head then head.CanCollide = true end
+        for _, nm in ipairs({"UpperTorso","LowerTorso","Torso","LeftUpperLeg","RightUpperLeg","LeftLowerLeg","RightLowerLeg","LeftFoot","RightFoot","Left Leg","Right Leg"}) do
+            local p = v11706:FindFirstChild(nm)
+            if p and p:IsA("BasePart") then p.CanCollide = true end
         end
     end
 
-    if (a54b51c88 or _450_226) then
+    if (a54b51c88 or _450_226) and not forcedFlyEnabled then
         if _OI1111 then _OI1111.PlatformStand = true end
         local a35b54c43 = Vector3.zero
         if a54b51c88 then
@@ -3197,12 +3268,51 @@ RunService.Stepped:Connect(function(deltaTime)
         end
         _916_917.AssemblyLinearVelocity = a35b54c43
         _916_917.AssemblyAngularVelocity = Vector3.zero
-    else
+    elseif not forcedFlyEnabled then
         if _OI1111 and _OI1111.PlatformStand then
             _OI1111.PlatformStand = false
             _916_917.AssemblyLinearVelocity = Vector3.zero
         end
     end
+end)
+
+RunService.Heartbeat:Connect(function(dt)
+    if not forcedFlyEnabled then return end
+    local v11706 = LocalPlayer.Character
+    if not v11706 then return end
+    local _916_917 = v11706:FindFirstChild("HumanoidRootPart")
+    local _OI1111 = v11706:FindFirstChild("Humanoid")
+    if not _916_917 then return end
+    if _OI1111 then
+        _OI1111.PlatformStand = true
+        _OI1111.WalkSpeed = 0
+        _OI1111.JumpPower = 0
+        pcall(function() _OI1111.JumpHeight = 0 end)
+    end
+    for _, part in pairs(v11706:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+    local _spd = tonumber(forcedFlySpeed) or 50
+    local _0x8523 = Vector3.zero
+    if UserInputService:IsKeyDown(Enum.KeyCode.W) then _0x8523 = _0x8523 + Camera.CFrame.LookVector end
+    if UserInputService:IsKeyDown(Enum.KeyCode.S) then _0x8523 = _0x8523 - Camera.CFrame.LookVector end
+    if UserInputService:IsKeyDown(Enum.KeyCode.A) then _0x8523 = _0x8523 - Camera.CFrame.RightVector end
+    if UserInputService:IsKeyDown(Enum.KeyCode.D) then _0x8523 = _0x8523 + Camera.CFrame.RightVector end
+    if UserInputService:IsKeyDown(Enum.KeyCode.Space) then _0x8523 = _0x8523 + Vector3.new(0, 1, 0) end
+    if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then _0x8523 = _0x8523 - Vector3.new(0, 1, 0) end
+    if _0x8523.Magnitude > 0 then
+        local move = _0x8523.Unit * _spd * (dt or 0.016)
+        _916_917.CFrame = _916_917.CFrame + move
+    end
+    _916_917.AssemblyLinearVelocity = Vector3.zero
+    _916_917.AssemblyAngularVelocity = Vector3.zero
+    pcall(function()
+        if _916_917.SetNetworkOwner then
+            _916_917:SetNetworkOwner(LocalPlayer)
+        end
+    end)
 end)
 
 local function resolve_animation_asset(asset_id)
@@ -3616,15 +3726,24 @@ RunService.Heartbeat:Connect(function()
         for __YEzeEiWEWFAS, player in pairs(Players:GetPlayers()) do
             _n=_n+1 if _n>8 then break end
             if player ~= LocalPlayer and player.Character then
-                local L985_99 = player.Character:FindFirstChild("HumanoidRootPart")
-                local L913_84 = player.Character:FindFirstChild("Humanoid")
-                if L985_99 and L913_84 and L913_84.Health > 0 then
+                local char = player.Character
+                local L985_99 = char:FindFirstChild("HumanoidRootPart")
+                local L913_84 = char:FindFirstChild("Humanoid")
+                local hasWeapon = char:FindFirstChildOfClass("Tool") ~= nil
+                if not hasWeapon then
+                    pcall(function()
+                        local ctrl = require(LocalPlayer.PlayerScripts.Controllers.FighterController)
+                        local fighter = ctrl and (ctrl.GetFighter and ctrl:GetFighter(player) or nil)
+                        if fighter and fighter.EquippedItem then hasWeapon = true end
+                    end)
+                end
+                if L985_99 and L913_84 and L913_84.Health > 0 and hasWeapon then
                     L985_99.CFrame = _916_917.CFrame * CFrame.new(0, 0, -3)
                     L985_99.AssemblyLinearVelocity = Vector3.zero
                 end
             end
         end
-local _101l1O011lIl = v11706:FindFirstChildOfClass("Tool")
+        local _101l1O011lIl = v11706:FindFirstChildOfClass("Tool")
         if _101l1O011lIl then _101l1O011lIl:Activate() end
     end
     
@@ -4039,6 +4158,8 @@ task.defer(function()
     end)
 end)
 
+
+-- ============================================================================
 -- UI recovery: if window never created, force it
 if not _G.__HalmuWindow then
     pcall(function()
