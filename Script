@@ -137,7 +137,7 @@ end)
 
 
 
-local nexlib = {accentclr = Color3.fromRGB(128, 213, 247), dropdownframes = {}, colorpickerframes = {}}
+local nexlib = {accentclr = Color3.fromRGB(255, 255, 255), dropdownframes = {}, colorpickerframes = {}}
 
 local _IlI0I0llI = {[Enum.UserInputType.MouseButton1]="M1",[Enum.UserInputType.MouseButton2]="M2",[Enum.UserInputType.MouseButton3]="M3"}
 local L387_17 = {Enum.KeyCode.Unknown,Enum.KeyCode.W,Enum.KeyCode.A,Enum.KeyCode.S,Enum.KeyCode.D,Enum.KeyCode.Up,Enum.KeyCode.Left,Enum.KeyCode.Down,Enum.KeyCode.Right,Enum.KeyCode.Slash,Enum.KeyCode.Tab,Enum.KeyCode.Backspace,Enum.KeyCode.Escape,Enum.KeyCode.RightShift}
@@ -148,26 +148,107 @@ end;
 
 local function make_draggable(clickObject, dragObject)
     pcall(function()
-        local L425_74 = false;
-        local _1297x260, __AOjJzuXUq, _352_117;
+        local L425_74 = false
+        local _1297x260, __AOjJzuXUq, _352_117
+        local previewFrame = nil
+        local previewStroke = nil
+
+        local function destroy_preview()
+            if previewFrame then
+                pcall(function() previewFrame:Destroy() end)
+                previewFrame = nil
+                previewStroke = nil
+            end
+        end
+
+        local function create_preview()
+            destroy_preview()
+            if not dragObject or not dragObject.Parent then return end
+
+            local accent = (nexlib and nexlib.accentclr) or Color3.fromRGB(255, 255, 255)
+
+            previewFrame = Instance.new("Frame")
+            previewFrame.Name = "DragPreviewOutline"
+            -- 안쪽까지 윤곽선 색으로 전부 채움 (메인 UI 투명화 없음)
+            previewFrame.BackgroundColor3 = accent
+            previewFrame.BackgroundTransparency = 0
+            previewFrame.BorderSizePixel = 0
+            previewFrame.AnchorPoint = dragObject.AnchorPoint
+            previewFrame.Size = dragObject.Size
+            previewFrame.Position = dragObject.Position
+            -- UI 뒤에 보이도록
+            previewFrame.ZIndex = math.max((dragObject.ZIndex or 1) - 10, 0)
+            previewFrame.ClipsDescendants = false
+            local parentGui = dragObject.Parent
+            previewFrame.Parent = parentGui
+            pcall(function()
+                dragObject.Parent = nil
+                dragObject.Parent = parentGui
+            end)
+
+            previewStroke = Instance.new("UIStroke")
+            previewStroke.Name = "PreviewStroke"
+            previewStroke.Color = accent
+            previewStroke.Thickness = 2
+            previewStroke.Transparency = 0
+            previewStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            previewStroke.Parent = previewFrame
+        end
+
+        local function update_preview(newPos)
+            if previewFrame and previewFrame.Parent then
+                previewFrame.Position = newPos
+            end
+        end
+
         clickObject.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then 
-                L425_74 = true;
-                __AOjJzuXUq = input.Position;
-                _352_117 = dragObject.Position;
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                L425_74 = true
+                __AOjJzuXUq = input.Position
+                _352_117 = dragObject.Position
+                create_preview()
                 input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then L425_74 = false end 
+                    if input.UserInputState == Enum.UserInputState.End then
+                        if L425_74 then
+                            if previewFrame and previewFrame.Parent then
+                                dragObject.Position = previewFrame.Position
+                            end
+                            L425_74 = false
+                            destroy_preview()
+                        end
+                    end
                 end)
-            end 
+            end
         end)
+
         clickObject.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then _1297x260 = input end 
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                _1297x260 = input
+            end
         end)
+
         game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if input == _1297x260 and L425_74 then 
-                local _0x3ba8 = input.Position - __AOjJzuXUq;
-                dragObject.Position = UDim2.new(_352_117.X.Scale, _352_117.X.Offset + _0x3ba8.X, _352_117.Y.Scale, _352_117.Y.Offset + _0x3ba8.Y)
-            end 
+            if input == _1297x260 and L425_74 then
+                local _0x3ba8 = input.Position - __AOjJzuXUq
+                local newPos = UDim2.new(
+                    _352_117.X.Scale,
+                    _352_117.X.Offset + _0x3ba8.X,
+                    _352_117.Y.Scale,
+                    _352_117.Y.Offset + _0x3ba8.Y
+                )
+                -- 실제 창은 고정, 윤곽선만 미리 이동
+                update_preview(newPos)
+            end
+        end)
+
+        game:GetService("UserInputService").InputEnded:Connect(function(input)
+            if L425_74 and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+                if previewFrame and previewFrame.Parent then
+                    dragObject.Position = previewFrame.Position
+                end
+                L425_74 = false
+                destroy_preview()
+            end
         end)
     end)
 end;
@@ -2846,8 +2927,9 @@ end)
 local L422_11 = _1OIIll01O["UI Settings"]:Section("menu settings", 1)
 L422_11:Label("Press [RightShift] to Toggle UI")
 
-local _IIl1OI111 = L422_11:Dropdown("Theme Color", {"Sky Blue", "Red", "Lime Green", "Purple", "Orange"}, "Sky Blue", function(colorName)
-    if colorName == "Sky Blue" then nexlib.accentclr = Color3.fromRGB(128, 213, 247)
+local _IIl1OI111 = L422_11:Dropdown("Theme Color", {"White", "Sky Blue", "Red", "Lime Green", "Purple", "Orange"}, "White", function(colorName)
+    if colorName == "White" then nexlib.accentclr = Color3.fromRGB(255, 255, 255)
+    elseif colorName == "Sky Blue" then nexlib.accentclr = Color3.fromRGB(128, 213, 247)
     elseif colorName == "Red" then nexlib.accentclr = Color3.fromRGB(255, 75, 75)
     elseif colorName == "Lime Green" then nexlib.accentclr = Color3.fromRGB(75, 255, 75)
     elseif colorName == "Purple" then nexlib.accentclr = Color3.fromRGB(180, 75, 255)
